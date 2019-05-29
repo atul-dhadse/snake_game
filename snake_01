@@ -1,0 +1,82 @@
+import pygame,sys,random
+
+pygame.init()
+
+game_display = pygame.display.set_mode((800,600))
+pygame.display.set_caption("snake")
+
+clock = pygame.time.Clock()
+
+
+font = pygame.font.SysFont(None, 25)
+def screen_msg(msg, color):
+    text = font.render(msg, True, color)
+    game_display.blit(text, [(400 - (5*len(msg))), 300])
+
+def run_game():
+    random_food_x = round(random.randrange(20,770)/10.0)*10.0
+    random_food_y = round(random.randrange(20,570)/10.0)*10.0
+    lead_x = 300
+    lead_y = 200
+    lead_x_change = 0
+    lead_y_change = 0
+    FPS = 30
+    white = (255,255,255)
+    black = (0,0,0)
+    red = (255,0,0)
+    game_over = False
+    game_close = False
+    # pygame.init()
+    while not game_close:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT:
+                    lead_x_change = 10
+                    lead_y_change = 0
+                elif event.key == pygame.K_LEFT:
+                    lead_x_change = -10
+                    lead_y_change = 0
+                elif event.key == pygame.K_UP:
+                    lead_y_change = -10
+                    lead_x_change = 0
+                elif event.key == pygame.K_DOWN:
+                    lead_y_change = 10
+                    lead_x_change = 0
+            
+        if lead_x == random_food_x and lead_y == random_food_y:
+            random_food_x = round(random.randrange(20,770)/10.0)*10.0
+            random_food_y = round(random.randrange(20,570)/10.0)*10.0
+
+
+        if lead_x >= 770 or lead_x <= 20 or lead_y <= 20 or lead_y >= 570:
+            game_over = True
+
+        lead_x += lead_x_change
+        lead_y += lead_y_change
+        game_display.fill(white)
+        game_display.fill(black, rect = [10,10,780,580])
+        game_display.fill(red, rect = [random_food_x,random_food_y,10,10])
+        game_display.fill(white, rect = [lead_x,lead_y,10,10])
+        pygame.display.update()
+
+        while game_over:
+            screen_msg("GAME OVER PRESS 'C' FOR CONTINUE AND 'Q' FOR CONTINUE",red)
+            pygame.display.update()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    sys.exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_c:
+                        run_game()
+                    elif event.key == pygame.K_q:
+                        sys.exit()
+        
+
+        clock.tick(FPS)
+        
+    pygame.quit()
+
+
+run_game()
