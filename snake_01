@@ -9,21 +9,66 @@ clock = pygame.time.Clock()
 
 #function for msg on screen
 
-font = pygame.font.SysFont(None, 25)
+font = pygame.font.SysFont(None, 35)
 def display_text(msg, color):
     text = font.render(msg, True, color)
     return text, text.get_rect()
 
 red = (255,0,0)
 
-def screen_msg(msg,color):
-    surface_text,text_rect = display_text("GAME OVER PRESS 'C' FOR CONTINUE AND 'Q' FOR QUIT", red)
-    text_rect.center = 400,300
+def screen_msg(msg,color,y=300):
+    surface_text,text_rect = display_text(msg, color)
+    text_rect.center = 400,y
     game_display.blit(surface_text,text_rect)
 
 #=======================================================================
 
+def score(points):
+    text = font.render("SCORE: " + str(points), True, (0,140,0))
+    game_display.blit(text , [10,10])
+
+
 direction = "right"
+green = (0,140,0)
+def start():
+    while True:
+        screen_msg("welcome to snake game!",green,200)
+        screen_msg("press 'c' for continue, 'q' for quit",green,300)
+        screen_msg("you can use 'space' to pause the game",green,400)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_c:
+                    run_game()
+                elif event.key == pygame.K_q:
+                    sys.exit()
+        pygame.display.update()
+        clock.tick(5)
+
+def game_pause():
+
+    paused = True
+
+    while paused: 
+        screen_msg("paused",red,300)
+        screen_msg("press 'c' for continue or 'q' to quit",red,350)
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_c:
+                    paused = False
+                elif event.key == pygame.K_q:
+                    sys.exit()
+                elif event.key == pygame.K_SPACE:
+                    game_pause()
+
+        pygame.display.update()
+        clock.tick(5)
+
 
 
 def run_game():
@@ -46,6 +91,7 @@ def run_game():
     global direction
 
     img = pygame.image.load("snakehead1.png")
+    apple_img = pygame.image.load("snake_food.png")
 
 
     def snake(snake_list, img):
@@ -83,8 +129,12 @@ def run_game():
                     direction = "down"
                     lead_y_change = 10
                     lead_x_change = 0
+                elif event.key == pygame.K_SPACE:
+                    game_pause()
 
-        if lead_x == random_food_x and lead_y == random_food_y:
+
+
+        if random_food_x <= lead_x <= random_food_x+20 and random_food_y <= lead_y <= random_food_y+20:
             random_food_x = round(random.randrange(20,770)/10.0)*10.0
             random_food_y = round(random.randrange(20,570)/10.0)*10.0
             snake_len +=1
@@ -96,8 +146,9 @@ def run_game():
         lead_y += lead_y_change
         game_display.fill(white)
         game_display.fill(black, rect = [10,10,780,580])
-        game_display.fill(red, rect = [random_food_x,random_food_y,10,10])
-        # game_display.fill(white, rect = [lead_x,lead_y,10,10])
+        game_display.blit(apple_img, [random_food_x,random_food_y,20,20])
+        # game_display.fill(red, rect = [random_food_x,random_food_y,20,20])
+        game_display.fill(white, rect = [lead_x,lead_y,10,10])
         
         snake_head = []
         snake_head.append(lead_x)
@@ -112,6 +163,8 @@ def run_game():
             for tip in snake_list[:-1]:
                 if tip == snake_head:
                     game_over = True
+
+        score(snake_len - 1)
  
         pygame.display.update()
 
@@ -130,5 +183,5 @@ def run_game():
         clock.tick(FPS)
         
     pygame.quit()
-
-run_game()
+start()
+# run_game()
