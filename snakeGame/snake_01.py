@@ -173,14 +173,17 @@ def showStartScreen():
         FONT2RECT = ROTATE2SURF.get_rect()
         FONT1RECT.center = (WINDOWWIDTH//2, WINDOWHEIGHT//2)
         FONT2RECT.center = (WINDOWWIDTH//2, WINDOWHEIGHT//2)
+        msgSurf, msgRect = getMsgSurfAndRect("Press a key to play the game...",20)
+        msgRect.topleft = (WINDOWWIDTH - 300, WINDOWHEIGHT - 50)
         DISPLAYSURF.blit(ROTATE1SURF, FONT1RECT)
         DISPLAYSURF.blit(ROTATE2SURF, FONT2RECT)
+        DISPLAYSURF.blit(msgSurf, msgRect)
         pygame.display.update()
         FPSCLOCK.tick(FPS)
         angle1 += 3
         angle2 += 7
 
-def drawMsg(msg, fontSize):
+def getMsgSurfAndRect(msg, fontSize):
     FONT = pygame.font.Font("freesansbold.ttf", fontSize)
     FONTSURF = FONT.render(msg, True, WHITE)
     FONTRECT = FONTSURF.get_rect()
@@ -194,11 +197,11 @@ def gameOverScreen():
     gameOverRect = gameOverSurf.get_rect()
     gameOverRect.midtop = (WINDOWWIDTH / 2, 10)
 
-    # scoreSurf, scoreRect = drawMsg("You Scored : " + str(scored))
+    # scoreSurf, scoreRect = getMsgSurfAndRect("You Scored : " + str(scored))
     # scoreRect.midtop = (WINDOWWIDTH/2, gameOverRect.height + 25 + 10)
 
-    msg1surf, msg1rect = drawMsg("To Continue.., Press Any Key", 30)
-    msg2surf, msg2rect = drawMsg("To Exit, Press Esc Key", 30)
+    msg1surf, msg1rect = getMsgSurfAndRect("To Continue.., Press Any Key", 30)
+    msg2surf, msg2rect = getMsgSurfAndRect("To Exit, Press Esc Key", 30)
     msg1rect.midtop = (WINDOWWIDTH /2, gameOverRect.height + 10 + 25 + 25)
     msg2rect.midtop = (WINDOWWIDTH /2, gameOverRect.height + msg1rect.height + 10 + 25 + 25 + 25)
     DISPLAYSURF.blit(gameOverSurf, gameOverRect)
